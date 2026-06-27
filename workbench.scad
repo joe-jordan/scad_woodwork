@@ -43,6 +43,7 @@ bottom_trestle_lift = stretcher_lift + four_by/2;
 trestle_groove_depth = 1;
 shelf_thickness = ply_thickness;
 shelf_height = stretcher_lift + four_by;
+top_trestle_tennon_drop = 2.5;
 
 
 module leg(position) {
@@ -69,6 +70,10 @@ module leg(position) {
                 // stretchers:
                 translate([stretcher_mortice_x_offset,four_by/3,stretcher_lift]) {
                     cube([2*four_by/3+delta,four_by/3,four_by], center=false);
+                };
+                // upper trestles:
+                translate([four_by/3,-delta,height-four_by]) {
+                    cube([four_by/3, four_by+(2*delta), four_by - top_trestle_tennon_drop], center=false);
                 };
             }
         }
@@ -139,6 +144,48 @@ module bottom_trestle(position, x_offset) {
 }
 
 module top_trestle(x_offset) {
+    // Bottom tresles have a through-mortice cut into the face of the tenon, which is the same size as the mortice (2.966), starting at the midpoint and going down.
+    // Bottom tresles also have a dado/groove from midpoint to 1.8 above, depth matches the tenon cheek.
+    // the tenon also sticks out 2_by/2.
+    y_offset = overhang; // this tennon is flat with the leg to make room for the apron.
+    y_length = tt_depth - 2*overhang;
+
+    lumber_height = four_by;
+    lumber_thickness = two_by;
+    tenon_cheek_depth = (two_by-(four_by/3))/2;
+
+    echo("CUT LIST: bottom trestle, 2x4 stock (assumed 89/38mm)", length = y_length)
+    translate([x_offset, y_offset, tt_height - tt_thickness - lumber_height]) {
+        color("#9D6638")
+        difference() {
+            union() {
+                cube([two_by, y_length, four_by], center = false);
+
+            }
+            union() { // cuts out of board
+                // four tenon cheeks
+                translate([(two_by+(four_by/3))/2,-delta,-delta]) {
+                    cube([tenon_cheek_depth+delta,four_by+delta,four_by+(2*delta)], center=false);
+                };
+                translate([-delta,-delta,-delta]) {
+                    cube([tenon_cheek_depth+delta,four_by+delta,four_by+(2*delta)], center=false);
+                };
+                translate([(two_by+(four_by/3))/2,y_length-four_by,-delta]) {
+                    cube([tenon_cheek_depth+delta,four_by+delta,four_by+(2*delta)], center=false);
+                };
+                translate([-delta,y_length-four_by,-delta]) {
+                    cube([tenon_cheek_depth+delta,four_by+delta,four_by+(2*delta)], center=false);
+                };
+                // two tenon offsets (~an inch below the top):
+                translate([0,-delta,lumber_height-top_trestle_tennon_drop]) {
+                    cube([lumber_thickness,four_by+delta,top_trestle_tennon_drop+delta], center=false);
+                };
+                translate([0,y_length-four_by+delta,lumber_height-top_trestle_tennon_drop]) {
+                    cube([lumber_thickness,four_by+delta,top_trestle_tennon_drop+delta], center=false);
+                };
+            }
+        }
+    }
 }
 
 module trestle(position) {
@@ -160,6 +207,9 @@ module trestle(position) {
     }
 }
 
+module stretcher(position) {
+}
+
 
 echo("ALL CUT LIST measurements are in cm.")
 leg(position = pos_fl);
@@ -169,8 +219,10 @@ leg(position = pos_br);
 
 top();
 
-//trestle(pos_rt);
-//trestle(pos_lt);
+trestle(pos_rt);
+trestle(pos_lt);
 trestle(pos_rb);
 trestle(pos_lb);
 
+stretcher(pos_f);
+stretcher(pos_r);
