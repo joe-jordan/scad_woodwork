@@ -7,27 +7,6 @@ include<workbench/top_trestle.scad>
 include<workbench/bottom_trestle.scad>
 include<workbench/stretcher.scad>
 
-
-// Position enum
-pos_fl = 0;
-pos_fr = 1;
-pos_br = 2;
-pos_bl = 3;
-// other positions:
-pos_f  = 4;
-pos_b  = 5;
-pos_r  = 6;
-pos_l  = 7;
-
-pos_ft  = 8;
-pos_bt  = 9;
-pos_rt  = 10;
-pos_lt  = 11;
-pos_fb  = 12;
-pos_bb  = 13;
-pos_rb  = 14;
-pos_lb  = 15;
-
 // table dimensions
 tt_width = 145; // x
 tt_height = 100; // z
@@ -47,6 +26,12 @@ shelf_height = stretcher_z_off + four_by;
 leg_thickness = four_by;
 leg_mortice_tenon_thickness = leg_thickness / 3;
 leg_mortice_tenon_offset = (leg_thickness - leg_mortice_tenon_thickness)/2;
+
+// Shared trestle dimensions:
+trestle_thickness = two_by;
+trestle_height = four_by;
+lttrestle_x_off = overhang + (leg_thickness - trestle_thickness)/2;
+rttrestle_x_off = tt_width - lttrestle_x_off - trestle_thickness;
 
 module add_legs() {
     length = tt_height - tt_thickness;
@@ -90,11 +75,7 @@ module add_top() {
 // A trestle is a 2x4 between two legs, that has a 2.966 thickness tenon sticking out the end (this is 1/3 of 4x.)
 // Top and Bottom trestles have slightly different cuts into this tenon.
 
-// Shared trestle dimensions:
-trestle_thickness = two_by;
-trestle_height = four_by;
-lttrestle_x_off = overhang + (leg_thickness - trestle_thickness)/2;
-rttrestle_x_off = tt_width - lttrestle_x_off - trestle_thickness;
+
 
 module add_top_trestles() {
     // Top trestle dimensions:
@@ -171,6 +152,8 @@ module add_stretchers() {
         stretcher(stretcher_length, stretcher_tenon_length, leg_mortice_tenon_thickness);
     }
 }
+
+
 
 
 // TODO CLI
