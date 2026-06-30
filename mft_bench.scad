@@ -6,6 +6,8 @@ include<workbench/ply_top.scad>
 include<workbench/top_trestle.scad>
 include<workbench/bottom_trestle.scad>
 include<workbench/stretcher.scad>
+include<workbench/ply_shelf.scad>
+include<workbench/apron.scad>
 
 // table dimensions
 tt_width = 145; // x
@@ -19,6 +21,7 @@ stretcher_z_off = 13; // from floor to bottom of x-oriented stretchers.
 overhang = two_by/2;
 trestle_groove_depth = 1;
 ttrestle_tenon_drop = 2.5;
+key_tenon_height = 3 * four_by / 4; // 3/4 the height of the board.
 
 // derived shared vars:
 shelf_thickness = ply_thickness;
@@ -32,6 +35,9 @@ trestle_thickness = two_by;
 trestle_height = four_by;
 lttrestle_x_off = overhang + (leg_thickness - trestle_thickness)/2;
 rttrestle_x_off = tt_width - lttrestle_x_off - trestle_thickness;
+
+// Shared key dimensions:
+key_thickness = two_by;
 
 module add_legs() {
     length = tt_height - tt_thickness;
@@ -153,8 +159,48 @@ module add_stretchers() {
     }
 }
 
+module add_shelf() {
+    // from stretcher:
+    stretcher_length = tt_width - 2*(overhang + leg_thickness/3);
+    stretcher_tenon_length = 2*leg_thickness/3;
 
+    x_off = overhang + leg_mortice_tenon_offset + leg_mortice_tenon_thickness - trestle_groove_depth;
+    y_off = overhang + (leg_thickness - two_by)/2;
+    z_off = stretcher_z_off + four_by;
 
+    shelf_length = tt_width - 2*x_off;
+    shelf_depth = tt_depth - 2*y_off;
+
+    cutoff_x = overhang + leg_thickness - x_off;
+    cutoff_y = overhang + leg_thickness - y_off;
+
+    translate([x_off, y_off, z_off]) {
+        shelf(shelf_length, shelf_depth, ply_thickness, cutoff_x, cutoff_y);
+    }
+}
+
+module add_aprons() {
+    apron_length = tt_width - 2*overhang;
+    apron_thickness = two_by;
+    apron_height = six_by;
+
+    apron_lap_length = leg_thickness;
+
+    apr_x_off = overhang;
+    fapr_y_off = 0;
+    bapr_y_off = tt_depth - apron_thickness;
+    apr_z_off = tt_height - tt_thickness - apron_height;
+
+    translate([apr_x_off, fapr_y_off, apr_z_off]) {
+        apron(apron_length, apron_lap_length, key_thickness, key_tenon_height);// key_thickness, key_height);
+    }
+
+    translate([apr_x_off + apron_length, bapr_y_off + apron_thickness, apr_z_off]) {
+        rotate(a = [0, 0, 180]) {
+            apron(apron_length, apron_lap_length, key_thickness, key_tenon_height);// key_thickness, key_height);
+        }
+    }
+}
 
 // TODO CLI
 
@@ -166,7 +212,8 @@ module whole_table() {
     add_top_trestles();
     add_bottom_trestles();
     add_stretchers();
-    // add_aprons();
+    add_shelf();
+    add_aprons();
     // add_key();
 }
 
