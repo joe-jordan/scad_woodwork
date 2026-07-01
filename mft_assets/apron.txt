@@ -1,0 +1,7 @@
+APRON, build X2.
+
+Aprons run along the top underneath, at attach with half lap joints (with bolts?) to the top of the legs.
+We also cut out a hole at the centre for a key.
+CUT LIST: apron, 2x6 stock (assumed 140/38mm), length = 141.2
+LAPS: half thickness, on each end one side, lap_length = 8.9
+KEY SLOT: positioned centre, all through the board, offset_along_length = 68.7, width = 3.8, depth = 6.675

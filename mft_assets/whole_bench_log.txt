@@ -1,0 +1,29 @@
+Loaded design '/home/joe/Documents/OpenSCAD/mft_bench.scad'.
+Compiling design (CSG Tree generation)...
+ECHO: "INPUTS: TABLE DIMENSIONS: ", tt_width = 145, tt_height = 100, tt_depth = 70
+ECHO: "INPUTS: OTHER NUMBERS:", floor_to_stretcher = 13, overhang = 1.9, shelf_groove = 1, ttrestle_drop = 2.5, key_visible = 6.675
+ECHO: "ALL CUT LIST measurements are in cm."
+ECHO: "CUT LIST: Leg. 4x4 stock (assumed 89mm^2)", length = 96.4
+ECHO: "CUT LIST: Leg. 4x4 stock (assumed 89mm^2)", length = 96.4
+ECHO: "CUT LIST: Leg. 4x4 stock (assumed 89mm^2)", length = 96.4
+ECHO: "CUT LIST: Leg. 4x4 stock (assumed 89mm^2)", length = 96.4
+ECHO: "CUT LIST: Top. Two layers of 18mm ply,", width = 70, length = 145
+ECHO: "CUT LIST: top trestle, 2x4 stock (assumed 89/38mm), allow extra length to plane flush with leg.", length = 66.2
+ECHO: "CUT LIST: top trestle, 2x4 stock (assumed 89/38mm), allow extra length to plane flush with leg.", length = 66.2
+ECHO: "CUT LIST: bottom trestle, 2x4 stock (assumed 89/38mm)", length = 70
+ECHO: "CUT LIST: bottom trestle, 2x4 stock (assumed 89/38mm)", length = 70
+ECHO: "CUT LIST: ankle stretcher, 2x4 stock (assumed 89/38mm)", length = 135.267
+ECHO: "CUT LIST: ankle stretcher, 2x4 stock (assumed 89/38mm)", length = 135.267
+ECHO: "CUT LIST: Shelf. One layer of 18mm ply (maybe as two sections, for ease of installation?)", width = 61.1, length = 131.333
+ECHO: "CUT LIST: apron, 2x6 stock (assumed 140/38mm)", length = 141.2
+ECHO: "CUT LIST: apron, 2x6 stock (assumed 140/38mm)", length = 141.2
+ECHO: "CUT LIST: key, 2x4 stock (assumed 89/38mm)", length = 70
+Compiling design (CSG Products generation)...
+Geometries in cache: 23
+Geometry cache size in bytes: 16744
+CGAL Polyhedrons in cache: 0
+CGAL cache size in bytes: 0
+Compiling design (CSG Products normalization)...
+Normalized tree has 73 elements!
+Compile and preview finished.
+Total rendering time: 0:00:00.009
