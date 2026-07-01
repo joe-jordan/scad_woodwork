@@ -1,3 +1,4 @@
+include<config.scad>
 include<lumber_dimensions.scad>
 
 module leg(length, stretcher_z_off, btrestle_z_off, ttrestle_z_drop, mortice_thickness, mortice_offset, mortice_height) {
@@ -33,6 +34,14 @@ module leg(length, stretcher_z_off, btrestle_z_off, ttrestle_z_drop, mortice_thi
     ttrmor_z_size = mortice_height - ttrestle_z_drop;
 
     echo ("CUT LIST: Leg. 4x4 stock (assumed 89mm^2)", length=length);
+
+    if (verbose) {
+        echo("All mortice widths are 1/3 the stock, set centrally.")
+        echo("MORTICE 1: for bottom trestle, through tenon.", position_z=btrmor_z_off, length_z=btrmor_z_size);
+        echo("MORTICE 2: for top trestle, through tenon, same orientation as MORTICE 1.", position_z_from_top=ttrestle_z_drop, length_z=ttrmor_z_size);
+        echo("MORTICE 3: for stretcher. stop at back of MORTICE 1 (2/3 depth). Offset by 1/2 in z, below MORTICE 1.");
+        echo("MORTICE 3 (cont): in the 90deg adjacent face to MORTICE 1 and 2.", position_z=stretcher_z_off, length_z=stremor_z_size);
+    }
     color("#4E220F")
     difference() {
         cube([lumber_width, lumber_depth, length], center = false);

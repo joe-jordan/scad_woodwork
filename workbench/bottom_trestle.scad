@@ -1,9 +1,12 @@
+include<config.scad>
 include<lumber_dimensions.scad>
 
 module bottom_trestle(length, tenon_length, tenon_thickness, mortice_top_groove_bottom_height, groove_depth, shelf_thickness) {
-    // Bottom tresles have a through-mortice cut into the face of the tenon, which is the same size as the mortice (2.966), starting at the midpoint and going down.
-    // Bottom tresles also have a dado/groove from midpoint to 1.8 above, depth matches the tenon cheek.
-    // the tenon also sticks out 2_by/2.
+    if (verbose) {
+        echo("Bottom tresles have a through-mortice cut into the face of the tenon, which is the same size as the tenon (2.966), starting at the height-midpoint and going down.");
+        echo("Bottom tresles also have a dado/groove from midpoint to 1.8 above, depth is a random number that 8 other things depend on.");
+        echo("the tenon also sticks out 2_by/2.");
+    }
     lumber_height = four_by;
     lumber_thickness = two_by;
 
@@ -34,7 +37,17 @@ module bottom_trestle(length, tenon_length, tenon_thickness, mortice_top_groove_
     groove_y_off = tenon_length;
     groove_x_depth = groove_depth + delta;
 
-    echo("CUT LIST: bottom trestle, 2x4 stock (assumed 89/38mm)", length = length)
+    echo("CUT LIST: bottom trestle, 2x4 stock (assumed 89/38mm)", length = length);
+
+    if (verbose) {
+        echo("at each end:");
+        echo(" TENON: cut first, on each end, full width",length = tenon_length, depth = tenon_cheek_depth, final_thickness=tenon_thickness);
+        echo(" MORTICE: (_in the tenon_), half height. cut once tenon is done.", half_height_aprox=mortice_height, mortice_width=mortice_length);
+        echo(" the moritce is not symmetrical in the tenon - remember that the tenon sticks out of the leg, and the mortice is centred in the leg.");
+        echo(" Perhaps build the leg before these trestles, make the trestle tenon to the leg mortice, and then mark this inner mortice with the tresle installed.");
+        echo("one side, down the middle:");
+        echo(" GROOVE: for ply to sit in. starts half way up (in line with top of mortice.)", width=shelf_thickness, depth = groove_depth);
+    }
 
     color("#9D6638")
     difference() {

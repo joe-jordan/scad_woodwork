@@ -1,4 +1,5 @@
 // ALL UNITS IN centimetres.
+include<workbench/config.scad>
 include<workbench/lumber_dimensions.scad>
 
 include<workbench/leg.scad>
@@ -8,6 +9,7 @@ include<workbench/bottom_trestle.scad>
 include<workbench/stretcher.scad>
 include<workbench/ply_shelf.scad>
 include<workbench/apron.scad>
+include<workbench/key.scad>
 
 // table dimensions
 tt_width = 145; // x
@@ -38,6 +40,12 @@ rttrestle_x_off = tt_width - lttrestle_x_off - trestle_thickness;
 
 // Shared key dimensions:
 key_thickness = two_by;
+
+module solo_leg() {
+    length = tt_height - tt_thickness;
+    btrestle_z_off = stretcher_z_off + trestle_height / 2;
+    leg(length, stretcher_z_off, btrestle_z_off, ttrestle_tenon_drop, leg_mortice_tenon_thickness, leg_mortice_tenon_offset, trestle_height);
+}
 
 module add_legs() {
     length = tt_height - tt_thickness;
@@ -81,7 +89,11 @@ module add_top() {
 // A trestle is a 2x4 between two legs, that has a 2.966 thickness tenon sticking out the end (this is 1/3 of 4x.)
 // Top and Bottom trestles have slightly different cuts into this tenon.
 
-
+module solo_top_trestle() {
+    ttrestle_length = tt_depth - 2 * overhang;
+    ttrestle_tenon_length = leg_thickness;
+    top_trestle(ttrestle_length, ttrestle_tenon_length, ttrestle_tenon_drop, leg_mortice_tenon_thickness);
+}
 
 module add_top_trestles() {
     // Top trestle dimensions:
@@ -99,6 +111,18 @@ module add_top_trestles() {
     translate([rttrestle_x_off, ttrestle_y_off, ttrestle_z_off]) {
         top_trestle(ttrestle_length, ttrestle_tenon_length, ttrestle_tenon_drop, leg_mortice_tenon_thickness);
     };
+}
+
+module solo_bottom_trestle() {
+    btrestle_length = tt_depth;
+    btrestle_tenon_length = leg_thickness + overhang;
+    
+    bottom_trestle(btrestle_length,
+        btrestle_tenon_length,
+        leg_mortice_tenon_thickness,
+        mortice_top_and_groove_bottom_height,
+        trestle_groove_depth,
+        shelf_thickness);
 }
 
 module add_bottom_trestles() {
@@ -138,6 +162,12 @@ module add_bottom_trestles() {
     };
 }
 
+module solo_stretcher() {
+    stretcher_length = tt_width - 2*(overhang + leg_thickness/3);
+    stretcher_tenon_length = 2*leg_thickness/3;
+    stretcher(stretcher_length, stretcher_tenon_length, leg_mortice_tenon_thickness);
+}
+
 module add_stretchers() {
     // Stretcher dimensions:
     stretcher_length = tt_width - 2*(overhang + leg_thickness/3);
@@ -159,11 +189,20 @@ module add_stretchers() {
     }
 }
 
-module add_shelf() {
-    // from stretcher:
-    stretcher_length = tt_width - 2*(overhang + leg_thickness/3);
-    stretcher_tenon_length = 2*leg_thickness/3;
+module solo_shelf() {
+    x_off = overhang + leg_mortice_tenon_offset + leg_mortice_tenon_thickness - trestle_groove_depth;
+    y_off = overhang + (leg_thickness - two_by)/2;
 
+    shelf_length = tt_width - 2*x_off;
+    shelf_depth = tt_depth - 2*y_off;
+
+    cutoff_x = overhang + leg_thickness - x_off;
+    cutoff_y = overhang + leg_thickness - y_off;
+
+    shelf(shelf_length, shelf_depth, ply_thickness, cutoff_x, cutoff_y);
+}
+
+module add_shelf() {
     x_off = overhang + leg_mortice_tenon_offset + leg_mortice_tenon_thickness - trestle_groove_depth;
     y_off = overhang + (leg_thickness - two_by)/2;
     z_off = stretcher_z_off + four_by;
@@ -179,6 +218,13 @@ module add_shelf() {
     }
 }
 
+module solo_apron() {
+    apron_length = tt_width - 2*overhang;
+    apron_lap_length = leg_thickness;
+    
+    apron(apron_length, apron_lap_length, key_thickness, key_tenon_height);
+}
+
 module add_aprons() {
     apron_length = tt_width - 2*overhang;
     apron_thickness = two_by;
@@ -192,19 +238,53 @@ module add_aprons() {
     apr_z_off = tt_height - tt_thickness - apron_height;
 
     translate([apr_x_off, fapr_y_off, apr_z_off]) {
-        apron(apron_length, apron_lap_length, key_thickness, key_tenon_height);// key_thickness, key_height);
+        apron(apron_length, apron_lap_length, key_thickness, key_tenon_height);
     }
 
     translate([apr_x_off + apron_length, bapr_y_off + apron_thickness, apr_z_off]) {
         rotate(a = [0, 0, 180]) {
-            apron(apron_length, apron_lap_length, key_thickness, key_tenon_height);// key_thickness, key_height);
+            apron(apron_length, apron_lap_length, key_thickness, key_tenon_height);
         }
     }
+}
+
+module solo_key() {
+    key_length = tt_depth;
+    key_height = four_by;
+    key_tenon_length = two_by;
+
+    key(key_length, key_height, key_thickness, key_tenon_length, key_tenon_height);
+}
+
+module add_key() {
+    key_length = tt_depth;
+    key_height = four_by;
+
+    key_tenon_length = two_by; // apron thickness
+    // Defined in globals: key_tenon_height, key_thickness.
+
+    // position:
+    key_x_off = (tt_width - key_thickness) / 2;
+    key_y_off = 0;
+    key_z_off = tt_height - tt_thickness - key_height;
+
+    translate([key_x_off, key_y_off, key_z_off]) {
+        key(key_length, key_height, key_thickness, key_tenon_length, key_tenon_height);
+    }
+
 }
 
 // TODO CLI
 
 module whole_table() {
+    echo("INPUTS: TABLE DIMENSIONS: ", tt_width = tt_width, tt_height = tt_height, tt_depth = tt_depth);
+    echo("INPUTS: OTHER NUMBERS:",
+        floor_to_stretcher=stretcher_z_off,
+        overhang=overhang,
+        shelf_groove=trestle_groove_depth,
+        ttrestle_drop=ttrestle_tenon_drop,
+        key_visible=key_tenon_height);
+
     echo("ALL CUT LIST measurements are in cm.");
 
     add_legs();
@@ -214,7 +294,52 @@ module whole_table() {
     add_stretchers();
     add_shelf();
     add_aprons();
-    // add_key();
+    add_key();
 }
 
-whole_table();
+module component(which) {
+    verbose = true; // does this work? no!
+    if (which == "leg") {
+        echo("LEG, build X4.");
+        solo_leg();
+    }
+    else if (which == "top") {
+        echo("TOP, two layers of ply.");
+        top(tt_width, tt_depth, tt_thickness);
+    }
+    else if (which == "top_trestle") {
+        echo("TOP TRESTLE, build X2.");
+        solo_top_trestle();
+    }
+    else if (which == "bottom_trestle") {
+        echo("BOTTOM TRESTLE, build X2.");
+        solo_bottom_trestle();
+    }
+    else if (which == "stretcher") {
+        echo("ANKLE STRETCHER, build X2.");
+        solo_stretcher();
+    }
+    else if (which == "shelf") {
+        echo("SHELF, build 1 as two parts (for install)?");
+        solo_shelf();
+    }
+    else if (which == "apron") {
+        echo("APRON, build X2.");
+        solo_apron();
+    }
+    else if (which == "key") {
+        echo("KEY, build 1.");
+        solo_key();
+    }
+}
+
+module cli() {
+    if (mode == "whole_table") {
+        whole_table();
+    }
+    else {
+        component(which_component);
+    }
+}
+
+cli();

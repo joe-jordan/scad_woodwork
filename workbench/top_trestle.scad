@@ -1,7 +1,10 @@
+include<config.scad>
 include<lumber_dimensions.scad>
 
 module top_trestle(length, tenon_length, drop, tenon_thickness) {
-    // Top trestles have a tenon that's flush with the leg, and a bite out of them ("drop") to ensure the top of the leg is whole.
+    if (verbose) {
+        echo("Top trestles have a tenon that's flush with the leg, and a bite out of them (drop) to ensure the top of the leg is whole.");
+    }
 
     lumber_height = four_by;
     lumber_thickness = two_by;
@@ -32,7 +35,13 @@ module top_trestle(length, tenon_length, drop, tenon_thickness) {
     drop_length = tenon_length + delta;
     drop_depth = lumber_thickness+(2*delta);
 
-    echo("CUT LIST: top trestle, 2x4 stock (assumed 89/38mm), allow extra length to plane flush with leg.", length = length)
+    echo("CUT LIST: top trestle, 2x4 stock (assumed 89/38mm), allow extra length to plane flush with leg.", length = length);
+
+    if (verbose) {
+        echo("at each end:");
+        echo(" TENON: full width at bottom, but cut out at the top:", drop=drop);
+        echo(" tenon dimensions:", length=tenon_length, depth=tenon_cheek_depth, final_thickness=tenon_thickness);
+    }
 
     color("#9D6638")
     difference() {

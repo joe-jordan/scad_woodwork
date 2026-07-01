@@ -1,8 +1,13 @@
+include<config.scad>
 include<lumber_dimensions.scad>
 
 module stretcher(length, tenon_length, tenon_thickness) {
-    // Stretchers run along the bottom of the front and back. they have a four_by/3 width tenon, like the trestles, but these only go 2/3 into the leg, interlocking with the lower trestle tenon's half-mortice.
-    // This board is long in X.
+    if (verbose) {
+        echo("Stretchers run along the bottom of the front and back.");
+        echo("they have a four_by/3 width tenon, like the trestles, but these only go");
+        echo("2/3 into the leg, interlocking with the lower trestle tenon's half-mortice.");
+        echo("This board is long in X.");
+    }
     
     lumber_height = four_by;
     lumber_thickness = two_by;
@@ -21,6 +26,9 @@ module stretcher(length, tenon_length, tenon_thickness) {
     cheek_height = lumber_height+(2*delta);
 
     echo("CUT LIST: ankle stretcher, 2x4 stock (assumed 89/38mm)", length = length)
+    if (verbose) {
+        echo("TENONS: one each end, symmetrical.", length=tenon_length, depth=tenon_cheek_depth, final_thickness=tenon_thickness);
+    }
     
     color("#9D6638")
     difference() {
