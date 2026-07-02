@@ -334,7 +334,7 @@ module component(which) {
 }
 
 module cli() {
-    if (mode == "whole_table") {
+    if (mode == "project") {
         whole_table();
     }
     else {
