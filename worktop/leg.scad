@@ -37,7 +37,7 @@ module leg(length, btrestle_z_off, tenon_thickness, groove_depth) {
         echo("MORTICE 1: for bottom trestle, through tenon.", position_z=btrmor_z_off, length_z=btrmor_z_size);
         echo("MORTICE 2: for top trestle, through tenon, same orientation as MORTICE 1.", position_z_from_top=ttrestle_z_drop, length_z=ttrmor_z_size);
     }
-    color("#9D6638")
+    color("#4E220F")
     difference() {
         cube([lumber_x, lumber_y, lumber_z], center = false);
         union() {// cuts to make for mortices.

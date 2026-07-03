@@ -1,16 +1,16 @@
 include<config.scad>
 include<lumber_dimensions.scad>
 
-module trestle(length, tenon_length, tenon_thickness, groove_depth, panel_thickness) {
+module stretcher(length, tenon_length, tenon_thickness, groove_depth, panel_thickness) {
     if (verbose) {
-        echo("Tresles have a tenon at each end.");
+        echo("Stretchers have a tenon at each end.");
         echo("They also have (as do all parts) a dado for the ply panel.");
         echo("the tenon is flush with the edges of the mortice on the leg.");
     }
 
     should_crop_tenon = true;
 
-    // These trestles are sideways on compared to the workbench, and run along the X axis (plane Y=0 is the wall.)
+    // These stretchers are sideways on compared to the worktop, and run along the X axis (plane Y=0 is the wall.)
     lumber_height = two_by;
     lumber_thickness = four_by;
 
