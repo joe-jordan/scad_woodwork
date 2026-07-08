@@ -52,6 +52,12 @@ module mortice(children_bounds, rule, d_along, offset_da, length_da, d_through, 
             along_off = offset_da + frame_bounds[0];
             along_size = length_da;
 
+            // compensate if the mortice is right at the end of a plank:
+            adjusted_along_off = abs(along_off -frame_bounds[0]) < delta ? along_off - delta : along_off;
+            adjusted_along_size = (abs(along_off + along_size -frame_bounds[1]) < delta 
+                                   || abs(along_off -frame_bounds[0]) < delta) ? 
+                along_size + delta : along_size;
+
             child_depth_size = frame_bounds[3] - frame_bounds[2];
             depth_specified = (depth_dt != undef) && (depth_dt > 0);
 
@@ -64,18 +70,18 @@ module mortice(children_bounds, rule, d_along, offset_da, length_da, d_through, 
             symmetry_off = (child_symmetry_size - symmetry_size) / 2 + frame_bounds[4];
             
             mortice_size = [
-                d_along == "x" ? along_size : (d_depth == "x" ? depth_size : symmetry_size),
-                d_along == "y" ? along_size : (d_depth == "y" ? depth_size : symmetry_size),
-                d_along == "z" ? along_size : (d_depth == "z" ? depth_size : symmetry_size),
+                d_along == "x" ? adjusted_along_size : (d_depth == "x" ? depth_size : symmetry_size),
+                d_along == "y" ? adjusted_along_size : (d_depth == "y" ? depth_size : symmetry_size),
+                d_along == "z" ? adjusted_along_size : (d_depth == "z" ? depth_size : symmetry_size),
             ];
 
             mortice_offset = [
-                d_along == "x" ? along_off : (d_depth == "x" ? depth_off : symmetry_off),
-                d_along == "y" ? along_off : (d_depth == "y" ? depth_off : symmetry_off),
-                d_along == "z" ? along_off : (d_depth == "z" ? depth_off : symmetry_off),
+                d_along == "x" ? adjusted_along_off : (d_depth == "x" ? depth_off : symmetry_off),
+                d_along == "y" ? adjusted_along_off : (d_depth == "y" ? depth_off : symmetry_off),
+                d_along == "z" ? adjusted_along_off : (d_depth == "z" ? depth_off : symmetry_off),
             ];
 
-            echo("mortice_params", mortice_size=mortice_size, mortice_offset=mortice_offset);
+            //echo("mortice_params", mortice_size=mortice_size, mortice_offset=mortice_offset);
 
             difference() {
                 union() {

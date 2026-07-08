@@ -21,10 +21,9 @@ module tenon(children_bounds, d_along, tenon_length_da, both_ends_da, d_across, 
 
     if (d_along != d_across && valid_dimension(d_along) && valid_dimension(d_across)) {
 
-        // d_through without the +/-.
         known_ds = [d_along, d_across];
         d_symmetry = !in("x", known_ds) ? "x" : (!in("y", known_ds) ? "y" : "z");
-        echo("debug", d_along=d_along, d_across=d_across, d_symmetry=d_symmetry);
+        // echo("debug", d_along=d_along, d_across=d_across, d_symmetry=d_symmetry);
 
         xmin = len(children_bounds) == 6 ? children_bounds[0] : 0;
         ymin = len(children_bounds) == 6 ? children_bounds[2] : 0;
@@ -50,7 +49,7 @@ module tenon(children_bounds, d_along, tenon_length_da, both_ends_da, d_across, 
             d_along_min_tenon = (both_ends_da == true || both_ends_da == "-");
             d_along_max_tenon = (both_ends_da == true || both_ends_da == "+");
 
-            echo("debug", d_along_min_tenon=d_along_min_tenon, d_along_max_tenon=d_along_max_tenon);
+            //echo("debug", d_along_min_tenon=d_along_min_tenon, d_along_max_tenon=d_along_max_tenon);
 
             // for each possible tenon, compute the cuts:
             // Possible Tenon cuts:
@@ -121,10 +120,10 @@ module tenon(children_bounds, d_along, tenon_length_da, both_ends_da, d_across, 
                 d_along == "z" ? D_along_off : (d_across == "z" ? D_across_off : D_symmetry_off),
             ];
 
-            echo("debug A", A_size=A_size, A_off=A_off);
-            echo("debug B", B_size=B_size, B_off=B_off);
-            echo("debug C", C_size=C_size, C_off=C_off);
-            echo("debug D", D_size=D_size, D_off=D_off);
+            // echo("debug A", A_size=A_size, A_off=A_off);
+            // echo("debug B", B_size=B_size, B_off=B_off);
+            // echo("debug C", C_size=C_size, C_off=C_off);
+            // echo("debug D", D_size=D_size, D_off=D_off);
 
             difference() {
                 union() {
@@ -147,6 +146,6 @@ module tenon(children_bounds, d_along, tenon_length_da, both_ends_da, d_across, 
         }
     }
     else {
-        echo("WARNING: invalid dimensions passed to tenon():", d_along=d_along, d_through=d_through);
+        echo("WARNING: invalid dimensions passed to tenon():", d_along=d_along, d_through=d_across);
     }
 }

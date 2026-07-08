@@ -3,6 +3,7 @@ include<general/plank.scad>
 include<general/sheet.scad>
 include<general/mortice.scad>
 include<general/tenon.scad>
+include<general/half_lap.scad>
 
 module demo() {
     xoff = 25;
@@ -39,7 +40,9 @@ module demo() {
         }
     }
     translate([xoff*6, 0, 0]) {
-        plank(150, 8.5, 3.8, "z", "y");
+        half_lap([3.8, 8.5, 150], "z", 8.5, "-", "x", "+") {
+            plank(150, 8.5, 3.8, "z", "y");
+        }
     }
     translate([xoff*7, 0, 0]) {
         sheet(100, 75, 1.8, "x", "y");
