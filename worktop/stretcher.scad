@@ -1,5 +1,7 @@
 include<config.scad>
 include<lumber_dimensions.scad>
+include<../general/plank.scad>
+include<../general/tenon.scad>
 
 module stretcher(length, tenon_length, tenon_thickness, groove_depth, panel_thickness) {
     if (verbose) {
@@ -14,20 +16,8 @@ module stretcher(length, tenon_length, tenon_thickness, groove_depth, panel_thic
     lumber_height = two_by;
     lumber_thickness = four_by;
 
-    // Cheeks:
+    // This is computed inside tenon.scad, but we need it for logging and for the "crop tenons to height" calculations.
     tenon_cheek_depth = (lumber_thickness-tenon_thickness)/2;
-
-    fcheek_x_off = -delta;
-    bcheek_x_off = length - tenon_length;
-
-    lcheek_y_off = -delta;
-    rcheek_y_off = lumber_thickness - tenon_cheek_depth;
-    
-    // Same for all cheeks:
-    cheek_zoff = -delta;
-    cheek_depth = tenon_cheek_depth + delta;
-    cheek_length = tenon_length + delta;
-    cheek_height = lumber_height+(2*delta);
 
     // dado for ply panel.
     groove_z_off = lumber_height - groove_depth;
@@ -38,11 +28,11 @@ module stretcher(length, tenon_length, tenon_thickness, groove_depth, panel_thic
 
     btecrop_x_off = -delta;
     ftecrop_x_off = length - tenon_length;
-    tecrop_y_off = tenon_cheek_depth - delta;
+    tecrop_y_off = - delta;
     tecrop_z_off = (lumber_height - groove_depth) + delta;
 
     tecrop_x = tenon_length + delta;
-    tecrop_y = tenon_thickness + 2*delta;
+    tecrop_y = lumber_thickness + 2*delta;
     tecrop_z = lumber_height - groove_depth;
 
 
@@ -56,23 +46,10 @@ module stretcher(length, tenon_length, tenon_thickness, groove_depth, panel_thic
     color("#9D6638")
     difference() {
         union() {
-            cube([length, lumber_thickness, lumber_height], center = false);
-
+            tenon([length, lumber_thickness, lumber_height], "x", tenon_length, true, "z", tenon_thickness)
+                plank(length, lumber_thickness, lumber_height, "x", "y");
         }
-        union() { // cuts out of board
-            // four tenon cheeks
-            translate([fcheek_x_off,lcheek_y_off,cheek_zoff]) {
-                cube([cheek_length,cheek_depth,cheek_height], center=false);
-            };
-            translate([bcheek_x_off,lcheek_y_off,cheek_zoff]) {
-                cube([cheek_length,cheek_depth,cheek_height], center=false);
-            };
-            translate([fcheek_x_off,rcheek_y_off,cheek_zoff]) {
-                cube([cheek_length,cheek_depth,cheek_height], center=false);
-            };
-            translate([bcheek_x_off,rcheek_y_off,cheek_zoff]) {
-                cube([cheek_length,cheek_depth,cheek_height], center=false);
-            };
+        union() { // More cuts on top of the simple tenons. TODO: General groove?
             // groove for panel:
             translate([groove_x_off, groove_y_off, groove_z_off]) {
                 cube([groove_x,panel_thickness,groove_z], center=false);

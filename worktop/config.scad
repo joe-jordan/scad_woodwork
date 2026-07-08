@@ -1,3 +1,3 @@
-verbose = false;
+verbose = true;
 mode = "comp";
-which_component = "trestle";
+which_component = "runner";

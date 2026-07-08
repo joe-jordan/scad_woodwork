@@ -5,6 +5,7 @@ include<worktop/lumber_dimensions.scad>
 include<worktop/stretcher.scad>
 include<worktop/leg.scad>
 include<worktop/panel.scad>
+include<worktop/runner.scad>
 
 
 wt_height = 95;
@@ -90,12 +91,19 @@ module completed_trestle() {
     }
 }
 
+module solo_runner() {
+    room_length = wt_width;
+
+    runner(room_length, wt_height, wt_depth, ply_thickness_top, trestle_setback);
+}
+
 module whole_room() {
     // TODO
 }
 
 module component(which) {
     verbose = true; // does this work? no!
+    echo("rendering component", c=which);
     if (which == "trestle_leg") {
         echo("LEG, build ??.");
         solo_trestle_leg();
@@ -119,6 +127,10 @@ module component(which) {
     else if (which == "top") {
         echo("TOP, one layer of 18mm ply.");
         //top(tt_width, tt_depth, tt_thickness);
+    }
+    else if (which == "runner") {
+        echo("RUNNER!");
+        solo_runner();
     }
 }
 

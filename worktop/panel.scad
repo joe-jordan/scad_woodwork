@@ -1,4 +1,5 @@
 include<config.scad>
+include<../general/sheet.scad>
 
 module panel(height, width, thickness) {
     if (verbose) {
@@ -11,6 +12,5 @@ module panel(height, width, thickness) {
         echo("DIMENSION WARNING: not easy to cut panels out of ply sheets.");
     }
 
-    color("#F7F1DE")
-    cube([width, thickness, height], center = false);
+    sheet(height, width, thickness, "z", "x");
 }

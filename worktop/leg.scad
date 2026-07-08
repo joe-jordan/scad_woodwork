@@ -1,54 +1,42 @@
 include<config.scad>
 include<lumber_dimensions.scad>
+include<../general/plank.scad>
+include<../general/mortice.scad>
 
 module leg(length, btrestle_z_off, tenon_thickness, groove_depth) {
-    // This is half an apron thickness.
-    lumber_x = two_by;
-    lumber_y = four_by;
-    lumber_z = length;
+    lumber_thickness = two_by;
+    lumber_width = four_by;
 
+    mortice_rule = tenon_thickness / lumber_width;
+    // Allowing for groove tidy up.
     tenon_height = two_by - groove_depth;
-    tenon_cheek_depth = (lumber_y - tenon_thickness) / 2;
+
     groove_thickness = ply_thickness_panel;
-    groove_offset = (lumber_y - groove_thickness) / 2;
+    groove_offset = (lumber_width - groove_thickness) / 2;
 
-    mor_x_off = -delta;
-    mor_y_off = tenon_cheek_depth;
-    bmor_z_off = btrestle_z_off;
-    tmor_z_off = lumber_z - tenon_height;
-
-    mor_x = lumber_x + 2*delta;
-    mor_y = tenon_thickness;
-    bmor_z = tenon_height;
-    tmor_z = tenon_height + delta; // protrudes from top
-
-    groo_x_off = lumber_x - groove_depth;
+    groo_x_off = lumber_thickness - groove_depth;
     groo_y_off = groove_offset;
     groo_z_off = btrestle_z_off + tenon_height - delta;
 
     groo_x = groove_depth + delta;
     groo_y = groove_thickness;
-    groo_z = lumber_z - groo_z_off;
+    groo_z = length - groo_z_off;
 
     echo ("CUT LIST: Leg. 4x4 stock (assumed 89mm^2)", length=length);
 
     if (verbose) {
-        echo("All mortice widths are 1/3 the stock, set centrally.")
-        echo("MORTICE 1: for bottom trestle, through tenon.", position_z=btrmor_z_off, length_z=btrmor_z_size);
-        echo("MORTICE 2: for top trestle, through tenon, same orientation as MORTICE 1.", position_z_from_top=ttrestle_z_drop, length_z=ttrmor_z_size);
+        echo("All mortice widths are 1/3 the stock, set centrally. Measure off your cut tenons!")
+        echo("MORTICE 1: for bottom trestle, through tenon.", position_z=btrestle_z_off, length_z=tenon_height);
+        echo("MORTICE 2: for top trestle, through tenon, same orientation as MORTICE 1.", position_z_from_top=0, length_z=tenon_height);
     }
     color("#4E220F")
     difference() {
-        cube([lumber_x, lumber_y, lumber_z], center = false);
-        union() {// cuts to make for mortices.
-            // lower trestle:
-            translate([mor_x_off,mor_y_off,bmor_z_off]) {
-                cube([mor_x, mor_y, bmor_z], center=false);
-            };
-            // upper trestle:
-            translate([mor_x_off,mor_y_off,tmor_z_off]) {
-                cube([mor_x, mor_y, tmor_z], center=false);
-            };
+        union() {
+            mortice([lumber_thickness, lumber_width, length], mortice_rule, "z", btrestle_z_off, tenon_height, "x")
+                mortice([lumber_thickness, lumber_width, length], mortice_rule, "z", length - tenon_height, tenon_height, "x")
+                    plank(length, lumber_width, lumber_thickness, "z", "y");
+        }
+        union() { // More cuts on top of the simple motices. TODO: General groove?
             // groove:
             translate([groo_x_off,groo_y_off,groo_z_off]) {
                 cube([groo_x, groo_y, groo_z], center=false);
