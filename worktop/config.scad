@@ -1,3 +1,3 @@
 verbose = true;
-mode = "comp";
+mode = "project";
 which_component = "runner";

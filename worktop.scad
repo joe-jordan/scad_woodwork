@@ -4,8 +4,10 @@ include<worktop/lumber_dimensions.scad>
 
 include<worktop/stretcher.scad>
 include<worktop/leg.scad>
+include<worktop/leg_v2.scad>
 include<worktop/panel.scad>
 include<worktop/runner.scad>
+include<worktop/ply_top.scad>
 
 
 wt_height = 95;
@@ -22,6 +24,8 @@ groove_depth = 1;
 bstretcher_z_off = 10;
 
 trestle_setback = 3;
+
+trestle_width = three_by;
 
 module solo_stretcher() {
     stretcher_length = wt_depth - leg_v2_x - trestle_setback;
@@ -79,6 +83,9 @@ module completed_trestle() {
         }
     }
 
+    // leg 2:
+    leg_v2(leg_length - three_by);
+
     frame_thickness = two_by - groove_depth;
     panel_height = wt_height - ply_thickness_top - 2*frame_thickness - bstretcher_z_off;
     panel_width = wt_depth - leg_v2_x - 2*frame_thickness - trestle_setback;
@@ -98,7 +105,20 @@ module solo_runner() {
 }
 
 module whole_room() {
-    // TODO
+    solo_runner();
+
+    half_trestle_width = trestle_width/2;
+    offset_increment = wt_width / 5;
+
+    for (trestle_i = [1:4]) {
+        translate([0, offset_increment * trestle_i - half_trestle_width, 0]) {
+            completed_trestle();
+        }
+    }
+
+    translate([0, 0, wt_height - ply_thickness_top]) {
+        top(wt_width, wt_depth, ply_thickness_top);
+    }
 }
 
 module component(which) {
@@ -126,7 +146,7 @@ module component(which) {
     }
     else if (which == "top") {
         echo("TOP, one layer of 18mm ply.");
-        //top(tt_width, tt_depth, tt_thickness);
+        top(wt_width, wt_depth, wt_thickness);
     }
     else if (which == "runner") {
         echo("RUNNER!");

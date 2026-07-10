@@ -21,7 +21,7 @@ module runner(room_length, wt_height, wt_depth, wt_thickness, overhang) {
     middle_y_plank_length = length_y_planks_without_laps + 2*yy_lap_length;
 
     length_x_planks = wt_depth - overhang;
-    length_z_planks = wt_height - wt_thickness;
+    length_z_planks = wt_height - wt_thickness - (lumber_width / 2);
 
     // x and y planks have half laps at each end. z planks only at the top.
 
@@ -68,6 +68,51 @@ module runner(room_length, wt_height, wt_depth, wt_thickness, overhang) {
     }
 
     // x planks.
+    x_x_size = length_x_planks;
+    x_y_size = lumber_thickness;
+    x_z_size = lumber_width;
 
-    
+    x_plank_size = [x_x_size, x_y_size, x_z_size];
+
+    x_x_off = 0;
+    x_z_off = wt_height - wt_thickness - x_z_size;
+
+    xl_y_off = 0;
+    xr_y_off = room_length - x_y_size;
+
+    translate([x_x_off, xl_y_off, x_z_off]) {
+        half_lap(x_plank_size, "x", lumber_thickness, "-", "z", "+") {
+            half_lap(x_plank_size, "x", lumber_width, "+", "z", "-") {
+                plank(length_x_planks, lumber_width, lumber_thickness, "x", "z");
+            }
+        }
+    }
+    translate([x_x_off, xr_y_off, x_z_off]) {
+        half_lap(x_plank_size, "x", lumber_thickness, "-", "z", "-") {
+            half_lap(x_plank_size, "x", lumber_width, "+", "z", "-") {
+                plank(length_x_planks, lumber_width, lumber_thickness, "x", "z");
+            }
+        }
+    }
+
+    // z planks
+
+    z_x_size = lumber_width;
+    z_y_size = lumber_thickness;
+    z_z_size = length_z_planks;
+
+    z_plank_size = [z_x_size, z_y_size, z_z_size];
+
+    z_x_off = x_x_size - z_x_size;
+    z_z_off = 0;
+
+    zl_y_off = 0;
+    zr_y_off = room_length - x_y_size;
+
+    translate([z_x_off, zl_y_off, z_z_off]) {
+        plank(length_z_planks, lumber_width, lumber_thickness, "z", "x");
+    }
+    translate([z_x_off, zr_y_off, z_z_off]) {
+        plank(length_z_planks, lumber_width, lumber_thickness, "z", "x");
+    }
 }
